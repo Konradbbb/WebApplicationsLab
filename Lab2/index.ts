@@ -1,7 +1,7 @@
 
-const hihatSound: HTMLAudioElement = document.querySelector('[data-sound="hihat"]')
+const hihatSound: HTMLAudioElement = document.querySelector('[data-sound="hihat"]');
 const clapSound: HTMLAudioElement = document.querySelector('[data-sound="clap"]'); 
-const boomSound: HTMLAudioElement = document.querySelector('[data-sound="boom"]');
+const boomSound: HTMLAudioElement  = document.querySelector('[data-sound="boom"]');
 const kickSound: HTMLAudioElement = document.querySelector('[data-sound="kick"]');
 const openhatSound: HTMLAudioElement = document.querySelector('[data-sound="openhat"]');
 const rideSound: HTMLAudioElement = document.querySelector('[data-sound="ride"]');
@@ -19,6 +19,7 @@ function appStart() {
     document.addEventListener('keypress', onKeyPress);
     const btnPlayChannel1 = document.querySelector('#playChannel1')
     btnPlayChannel1.addEventListener('click', onPlayChannel1);
+    
 }
 
 function onPlayChannel1(): void {
@@ -26,11 +27,6 @@ function onPlayChannel1(): void {
         setTimeout(() => playSound(sound.key), sound.time)
     })
 
-}
-
-function getAudioElements(): void {
-    // const hihatSOund: HTMLAudioElement = document.querySelector('[data-sound="hihat"]'); // wyciąganie referencji audio
-    
 }
 
 function onKeyPress(ev: KeyboardEvent): void {
