@@ -1,13 +1,13 @@
 
-let hihatSOund: HTMLAudioElement;
-let clapSOund: HTMLAudioElement;
-let boomSOund: HTMLAudioElement;
-let kickSOund: HTMLAudioElement;
-let openhatSOund: HTMLAudioElement;
-let rideSOund: HTMLAudioElement;
-let snareSOund: HTMLAudioElement;
-let tinkSOund: HTMLAudioElement;
-let tomSOund: HTMLAudioElement;
+const hihatSound: HTMLAudioElement = document.querySelector('[data-sound="hihat"]')
+const clapSound: HTMLAudioElement = document.querySelector('[data-sound="clap"]'); 
+const boomSound: HTMLAudioElement = document.querySelector('[data-sound="boom"]');
+const kickSound: HTMLAudioElement = document.querySelector('[data-sound="kick"]');
+const openhatSound: HTMLAudioElement = document.querySelector('[data-sound="openhat"]');
+const rideSound: HTMLAudioElement = document.querySelector('[data-sound="ride"]');
+const snareSound: HTMLAudioElement = document.querySelector('[data-sound="snare"]');
+const tinkSound: HTMLAudioElement = document.querySelector('[data-sound="tink"]');
+const tomSound: HTMLAudioElement = document.querySelector('[data-sound="tom"]');
 
 
 const channel1: any[] = [];
@@ -15,57 +15,87 @@ const channel1: any[] = [];
 appStart();
 
 
-
-function appStart(): void {
-    document.body.addEventListener('keypress', onKeyDown);
-    const btnChannel1Play = document.querySelector('#btnChannel1')      //wyrzucić do osobnej funckji
-    btnChannel1Play.addEventListener('click', onPlayChannel1);
-    getSounds();    
+function appStart() {
+    document.addEventListener('keypress', onKeyPress);
+    const btnPlayChannel1 = document.querySelector('#playChannel1')
+    btnPlayChannel1.addEventListener('click', onPlayChannel1);
 }
 
 function onPlayChannel1(): void {
     channel1.forEach(sound => {
-        setTimeout(() => playSOund(sound.key), sound.time)
-    });
+        setTimeout(() => playSound(sound.key), sound.time)
+    })
+
 }
 
-function getSounds(): void {
+function getAudioElements(): void {
     // const hihatSOund: HTMLAudioElement = document.querySelector('[data-sound="hihat"]'); // wyciąganie referencji audio
-    const hihatSOund = document.querySelector('[data-sound="hihat"]')
-    const clapSOund: HTMLAudioElement = document.querySelector('[data-sound="clap"]'); // wyciąganie referencji audio
-    const boomSOund = document.querySelector('[data-sound="boom"]');
-    const kickSOund = document.querySelector('[data-sound="kick"]');
-    const openhatSOund = document.querySelector('[data-sound="openhat"]');
-    const rideSOund = document.querySelector('[data-sound="ride"]');
-    const snareSOund = document.querySelector('[data-sound="snare"]');
-    const tinkSOund = document.querySelector('[data-sound="tink"]');
-    const tomSOund = document.querySelector('[data-sound="tom"]');
-
+    
 }
 
-function onKeyDown(ev: KeyboardEvent): void {
-    console.log(ev);
+function onKeyPress(ev: KeyboardEvent): void {
     const key = ev.key;
     const time = ev.timeStamp;
+    // const hihatSound: HTMLAudioElement = document.querySelector('[data-sound="hihat"]')
+    // hihatSound.play()
     channel1.push({key, time});  //tworzymy obiekt w skróconej notacji ts {key: key, time: time}, odwołuje się do istniejącej zmiennej "key"
-   playSOund(key);
+    playSound(key);
 }
 
 
-function playSOund(key: string): void{
+function playSound(key: string) {
 
-    
-
-    switch(key) {
+    switch (key) {
         case 'a':
-            hihatSOund.currentTime = 0; // pozwala na odtworzenie dźwięku w kazdej chwili (kazdy clicxk to nowy dźwięk)
-            hihatSOund.play();  // odtwarzanie muzyki
+            kickSound.currentTime = 0;
+            kickSound.play();
             break;
         case 's':
-            clapSOund.currentTime = 0;
-            clapSOund.play();
+            clapSound.currentTime = 0;
+            clapSound.play();
             break;
+        case 'd':
+                hihatSound.currentTime = 0;
+                hihatSound.play();
+                break;
+        case 'f':
+                boomSound.currentTime = 0;
+                boomSound.play();
+                break;
+        case 'q':
+                openhatSound.currentTime = 0;
+                openhatSound.play();
+                break;
+        case 'w':
+                rideSound.currentTime = 0;
+                rideSound.play();
+                break;
+        case 'e':
+                snareSound.currentTime = 0;
+                snareSound.play();
+                break;
+        case 'r':
+                tinkSound.currentTime = 0;
+                tinkSound.play();
+                break;
+        case 't':
+                tomSound.currentTime = 0;
+                tomSound.play();
+                break;
     }
+
+// function playSound(key: string) {
+    
+//     switch(key) {
+//         case 'a':
+//             hihatSOund.currentTime = 0; // pozwala na odtworzenie dźwięku w kazdej chwili (kazdy clicxk to nowy dźwięk)
+//             hihatSOund.play();  // odtwarzanie muzyki
+//             break;
+//         case 's':
+//             clapSOund.currentTime = 0;
+//             clapSOund.play();
+//             break;
+//     }
 
     // hihatSOund.currentTime = 0;  
     // hihatSOund.play(); // odtwarzanie muzyki

@@ -1,0 +1,41 @@
+html {
+    font-size: 10px;
+    background: url(img/b9r5sEL.jpg) bottom center;
+    
+    background-size: cover;
+  }
+  
+  body,html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Times New Roman';
+  }
+  
+  .keys {
+    display:flex;
+    min-height: 50vh;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .key {
+    border: .4rem solid rgb(21, 163, 168);
+    border-radius: 50%;
+    margin: 1rem;
+    font-size: 1.5rem;
+    padding: 1rem .5rem;
+    transition: all .07s ease;
+    width: 10rem;
+    text-align: center;
+    color: white;
+    background: rgba(20, 60, 192, 0.719);
+    text-shadow: 0 0 .5rem rgb(29, 11, 11);
+  }
+  .keys :active {
+    background-color: rebeccapurple;
+  }
+  
+  kbd {
+    display: block;
+    font-size: 7rem;
+  }
