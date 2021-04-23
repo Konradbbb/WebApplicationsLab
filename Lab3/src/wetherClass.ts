@@ -7,11 +7,12 @@ export class WeatherAPIClass {
     pressureAPI: string;
     cloudAPI: string;  
     
-    constructor(nameAPI: string, tempAPI: string, pressureAPI: string, cloudAPI: string) {
-        this.tempAPI = tempAPI;
-        this.nameAPI = nameAPI;
-        this.pressureAPI = pressureAPI;
-        this.cloudAPI = cloudAPI;
-    }
+    // constructor(nameAPI: string, tempAPI: string, pressureAPI: string, cloudAPI: string) {
+    //     this.tempAPI = tempAPI;
+    //     this.nameAPI = nameAPI;
+    //     this.pressureAPI = pressureAPI;
+    //     this.cloudAPI = cloudAPI;
+    // }
 
+    
 }
