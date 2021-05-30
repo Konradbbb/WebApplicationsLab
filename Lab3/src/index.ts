@@ -1,9 +1,7 @@
 import { App } from './app';
 import './main.scss';
 
-const citiesInfo = [] as any[];
-
-
+let citiesInfo = [] as any [];
 
 document.getElementById("addCityButton").addEventListener("click", () => {
 
@@ -12,33 +10,69 @@ document.getElementById("addCityButton").addEventListener("click", () => {
 
     app.getWeather(cityName).then(data => {
 
+        const containerElement = document.createElement("div");
+        containerElement.className = "weatherContainer";
         const nameElement = document.createElement("p");
         nameElement.innerHTML = data.name;
 
         const pressureElement = document.createElement("p");
-        pressureElement.innerHTML = data.main.pressure;
+        pressureElement.innerHTML = data.main.pressure +" hPa";
 
         const tempElement = document.createElement("p");
-        tempElement.innerHTML = data.main.temp;
-
+        tempElement.innerHTML = data.main.temp+" °C";
+        
         const cloudElement = document.createElement("p");
         cloudElement.innerHTML = data['weather'][0]['main'];
 
         // pressureelement.className = "classname";
-        // pressureElement.className = "weatherBox";
-
-        document.body.appendChild(nameElement);
-        document.body.appendChild(pressureElement);
-        document.body.appendChild(tempElement);
-        document.body.appendChild(cloudElement);
+        containerElement.appendChild(nameElement);
+        containerElement.appendChild(pressureElement);
+        containerElement.appendChild(tempElement);
+        containerElement.appendChild(cloudElement);
+        document.getElementsByClassName("flexContainer")[0].appendChild(containerElement);
 
         citiesInfo.push(data);
+
         app.saveData(citiesInfo);
-        app.refreshPage();
-        app.getData();
-       
+        
     });
 
-        //localStorage.removeItem("weatherData");
-    }
-)
+    // localStorage.removeItem("weatherData");
+});
+
+(function (){
+
+    citiesInfo = JSON.parse(localStorage.getItem('weatherData'));
+    
+    citiesInfo.forEach((element, index) => {
+
+        console.log(citiesInfo);
+
+        const containerElement = document.createElement("div");
+        containerElement.className = "weatherContainer";
+        const nameElement = document.createElement("p");
+        nameElement.innerHTML = citiesInfo[index].name;
+
+        const pressureElement = document.createElement("p");
+        pressureElement.innerHTML = citiesInfo[index].main.pressure +" hPa";
+
+        const tempElement = document.createElement("p");
+        tempElement.innerHTML = citiesInfo[index].main.temp + " °C";
+        
+        const cloudElement = document.createElement("p");
+        cloudElement.innerHTML = citiesInfo[index]['weather'][0]['main'];
+
+        // pressureelement.className = "classname";
+        containerElement.appendChild(nameElement);
+        containerElement.appendChild(pressureElement);
+        containerElement.appendChild(tempElement);
+        containerElement.appendChild(cloudElement);
+        document.getElementsByClassName("flexContainer")[0].appendChild(containerElement);
+
+    })
+    
+
+        // const cities1 = {} as any;
+        // cities1.cityName = "testtt";
+
+}) ();
