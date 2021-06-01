@@ -45,6 +45,7 @@ async function getNotes() {
 
 
 
+
 document.getElementById("addNoteButton").addEventListener("click", () => {
 
     let noteTitle = (document.getElementById("inputTitle") as HTMLInputElement).value;
