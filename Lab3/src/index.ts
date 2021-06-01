@@ -3,8 +3,8 @@ import './main.scss';
 
 let citiesInfo = [] as any [];
 
-document.getElementById("addCityButton").addEventListener("click", () => {
 
+document.getElementById("addCityButton").addEventListener("click", () => {
     let cityName = (document.getElementById("inputCityButton") as HTMLInputElement).value;
     const app = new App(cityName);
 
@@ -12,6 +12,7 @@ document.getElementById("addCityButton").addEventListener("click", () => {
 
         const containerElement = document.createElement("div");
         containerElement.className = "weatherContainer";
+
         const nameElement = document.createElement("p");
         nameElement.innerHTML = data.name;
 
@@ -24,55 +25,56 @@ document.getElementById("addCityButton").addEventListener("click", () => {
         const cloudElement = document.createElement("p");
         cloudElement.innerHTML = data['weather'][0]['main'];
 
-        // pressureelement.className = "classname";
         containerElement.appendChild(nameElement);
         containerElement.appendChild(pressureElement);
         containerElement.appendChild(tempElement);
         containerElement.appendChild(cloudElement);
+
         document.getElementsByClassName("flexContainer")[0].appendChild(containerElement);
 
+        console.log(data);
+        console.log(citiesInfo);
+        if(!citiesInfo){
+            citiesInfo = [];
+        }
         citiesInfo.push(data);
-
         app.saveData(citiesInfo);
-        
     });
-
-    // localStorage.removeItem("weatherData");
+  
 });
+
 
 (function (){
 
     citiesInfo = JSON.parse(localStorage.getItem('weatherData'));
+    console.log(citiesInfo);
+    if(citiesInfo){
+        citiesInfo.forEach((element, index) => {
+
+            const containerElement = document.createElement("div");
+            containerElement.className = "weatherContainer";
+
+            const nameElement = document.createElement("p");
+            nameElement.innerHTML = citiesInfo[index].name;
+
+            const pressureElement = document.createElement("p");
+            pressureElement.innerHTML = citiesInfo[index].main.pressure +" hPa";
+
+            const tempElement = document.createElement("p");
+            tempElement.innerHTML = citiesInfo[index].main.temp + " °C";
+            
+            const cloudElement = document.createElement("p");
+            cloudElement.innerHTML = citiesInfo[index]['weather'][0]['main'];
+
+            // pressureelement.className = "classname";
+            containerElement.appendChild(nameElement);
+            containerElement.appendChild(pressureElement);
+            containerElement.appendChild(tempElement);
+            containerElement.appendChild(cloudElement);
+            document.getElementsByClassName("flexContainer")[0].appendChild(containerElement);
+
+        })
     
-    citiesInfo.forEach((element, index) => {
-
-        console.log(citiesInfo);
-
-        const containerElement = document.createElement("div");
-        containerElement.className = "weatherContainer";
-        const nameElement = document.createElement("p");
-        nameElement.innerHTML = citiesInfo[index].name;
-
-        const pressureElement = document.createElement("p");
-        pressureElement.innerHTML = citiesInfo[index].main.pressure +" hPa";
-
-        const tempElement = document.createElement("p");
-        tempElement.innerHTML = citiesInfo[index].main.temp + " °C";
-        
-        const cloudElement = document.createElement("p");
-        cloudElement.innerHTML = citiesInfo[index]['weather'][0]['main'];
-
-        // pressureelement.className = "classname";
-        containerElement.appendChild(nameElement);
-        containerElement.appendChild(pressureElement);
-        containerElement.appendChild(tempElement);
-        containerElement.appendChild(cloudElement);
-        document.getElementsByClassName("flexContainer")[0].appendChild(containerElement);
-
-    })
-    
-
-        // const cities1 = {} as any;
-        // cities1.cityName = "testtt";
+    }
 
 }) ();

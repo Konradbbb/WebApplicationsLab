@@ -1,6 +1,6 @@
 body {
   background: lightblue;
-  display: grid;
+  display: flexbox;
 }
 
 .weatherBoxes {
@@ -9,14 +9,33 @@ body {
   border: 5px salmon dotted;
 }
 
-
 .weatherContainer {
   border: 1px solid red;
+  border-radius: 10%;
   width: 10%;
   text-align: center;
+  margin: 1%;
+  &:hover {
+    border: 1px solid green;
+    border-radius: 600px;
+  }
+
+
 }
 
 .flexContainer {
-  border: 3px solid black;
+  // border: 3px solid black;
   display: flex;
+
+}
+
+#addCityButton {
+  border-radius: 30px;
+  &:hover {
+    color: salmon;
+  }
+}
+
+#inputCityButton {
+  
 }
