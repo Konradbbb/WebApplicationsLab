@@ -2,20 +2,19 @@ import {Note} from './Note';
 
 export class Notes {
 
-notesArr: Note[];
+notesArray: Note[];
 
 constructor(){
-    this.notesArr = Array<Note>();
+    this.notesArray = Array<Note>();
 }
-
-addNote(note: Note){
-    console.log(this.notesArr);
-    this.notesArr.push(note);
+  addNote(note: Note){
+    console.log(this.notesArray);
+    this.notesArray.push(note);
 }
 
 getNotes(): Note[]{
 
-    return this.notesArr;
+    return this.notesArray;
 
 }
 
