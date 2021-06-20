@@ -1,84 +1,16 @@
-// import './main.scss';
-
-// import firebase from 'firebase';
-// import { firebaseConfig } from './config';
-
-// const firebaseApp = firebase.initializeApp(firebaseConfig);
-// const db = firebaseApp.firestore();
-
-// const note = {
-//     title: 'First note1',
-//     content: 'First note content from code'
-// }
-
-
-// // //adding new notes
-// // // addNote(note);
-
-// // async function addNote(note: any) {
-// //     const res = await db.collection('notes').add(note);
-// // }
-
-// // //delete notes
-// // // deleteNote('teldfpemuaqHmTddY6YV');
-// // async function deleteNote(id: string) {
-// //     const res = await db.collection('notes').doc(id).delete();
-// // }
-
-// // //update notes
-// // // updateNote('linj2nz1FUpPnHsJNgvj', {title: 'update note', content: 'updated note from code'})
-// // async function updateNote(id: string, note: any) {
-// //     const res = await db.collection('notes').doc(id).update(note);
-// // }
-
-// // //get note 
-// // // getNote('linj2nz1FUpPnHsJNgvj').then(res => console.log(res));
-// // async function getNote(id: string) {
-// //     return db.collection('notes').doc(id).get().then(res => ({id: res.id, data: res.data()}));
-// // }
-
-
-
-// // async function getNotes() {
-// //     return db.collection('notes').get().then (res => ({size: res.size, docs: res.docs}));
-// // }
-
-
-
-
-// document.getElementById("addNoteButton").addEventListener("click", () => {
-
-//     let noteTitle = (document.getElementById("inputTitle") as HTMLInputElement).value;
-
-//    let noteContent = (document.getElementById("inputContent") as HTMLInputElement).value;
-
-   
-//    const containerElement = document.createElement("div");
-//    containerElement.className = "noteContainer";
-
-//    const titleElement = document.createElement("p");
-//    titleElement.innerHTML = noteTitle;
-
-//    const contentElement = document.createElement("p");
-//    contentElement.innerHTML = noteContent;
-
-//    containerElement.appendChild(titleElement);
-//     containerElement.appendChild(contentElement);
-
-//     document.getElementsByClassName("lessImportantNotes")[0].appendChild(containerElement);
-
-// })
-
-
 import './main.scss';
 import {Note} from './source/Note';
 import {Notes} from './source/Notes';
 import {AppStorage} from './source/AppStorage';
-
+import firebase from "firebase";
+import { firebaseConfig } from './source/config';
+import { AppFirestoreStorage } from './source/AppFirestoreStorage';
 
 let notes = new Notes();
 const appStorage = new AppStorage(notes);
-let currentColor: string;
+let currentColor = "nothing" as string;
+const appFirestoreStorage = new AppFirestoreStorage();
+const shouldUseFirestore = firebaseConfig.databaseActive;
 
 document.getElementById("addNoteButton").addEventListener("click", () => {
 
@@ -86,10 +18,6 @@ document.getElementById("addNoteButton").addEventListener("click", () => {
 
    let noteContent = (document.getElementById("inputContent") as HTMLInputElement).value;
 
-   if(!notes){
-    notes = new Notes();
-}
-   
    const containerElement = document.createElement("div");
    containerElement.className = "noteContainer";
    containerElement.id = "noteContainerID" + notes.getNotes().length;
@@ -113,7 +41,19 @@ document.getElementById("addNoteButton").addEventListener("click", () => {
    editElement.innerHTML = "E";
    editElement.id = "editButton" + notes.getNotes().length;
    editElement.addEventListener("click", editNote);
-   
+
+   const prioritizeElement = document.createElement("button");
+   prioritizeElement.className = "prioritizeButton";
+   prioritizeElement.innerHTML = "P";
+   prioritizeElement.id = "prioritizeButton" + notes.getNotes().length;
+   prioritizeElement.addEventListener("click", prioritizeNote);
+
+   const unprioritizeElement = document.createElement("button");
+   unprioritizeElement.className = "unprioritizeButton";
+   unprioritizeElement.innerHTML = "NP";
+   unprioritizeElement.id = "unprioritizeButton" + notes.getNotes().length;
+   unprioritizeElement.style.visibility = 'hidden';
+   unprioritizeElement.addEventListener("click", unprioritizeNote);
 
    const generateColor = document.createElement("button");
    generateColor.className = "generateColorButton";
@@ -134,47 +74,47 @@ document.getElementById("addNoteButton").addEventListener("click", () => {
     containerElement.appendChild(contentElement);
     containerElement.appendChild(deleteElement);
     containerElement.appendChild(editElement);
+    containerElement.appendChild(prioritizeElement);
+    containerElement.appendChild(unprioritizeElement);
     containerElement.appendChild(generateColor);
     containerElement.appendChild(dateOfCreation);
 
     const note = new Note(noteTitle, noteContent, false, today, currentColor);
-
    
     notes.addNote(note);
 
-    const appStorage = new AppStorage(notes);
+    if(shouldUseFirestore) {
+        appFirestoreStorage.saveToDatabase(notes);
+    } else {
 
-    appStorage.saveToLocalStorage();
-
+    appStorage.saveToLocalStorage(notes);
+    }
     document.getElementsByClassName("lessImportantNotes")[0].appendChild(containerElement);
-
 
 });
 
 function deleteNote(this: HTMLElement) {
-    console.log(this);
+
     let index = this.id.replace("deleteButton","");
     notes.getNotes().splice(+index,1);
-    // localStorage.setItem('notesData', JSON.stringify(notes.getNotes()));
-    const appStorage = new AppStorage(notes);
-    appStorage.saveToLocalStorage();
-    console.log(index);
-    window.location.reload();
-
+    if(shouldUseFirestore){
+        appFirestoreStorage.saveToDatabase(notes);
+    } else {
+        appStorage.saveToLocalStorage(notes);
+    }
+    this.parentElement.remove();
 }
 
 function editNote(this: HTMLElement) {
     let index = this.id.replace("editButton","");
     let noteContent = (document.getElementById("contentID" + index) as HTMLInputElement).value;
-    console.log(index);
     notes.getNotes()[+index].content = noteContent;
-    // localStorage.setItem('notesData', JSON.stringify(notes.getNotes()));
-    const appStorage = new AppStorage(notes);
-    appStorage.saveToLocalStorage();
+    if(shouldUseFirestore){
+        appFirestoreStorage.saveToDatabase(notes);
+    } else {
+        appStorage.saveToLocalStorage(notes);
+    }
 }
-//  const editNoteFunction = (this: HTMLElement) => {
-
-//  }
 
 function getRandColor(this: HTMLElement)
 {
@@ -184,26 +124,42 @@ function getRandColor(this: HTMLElement)
         color = "0" + color;
     }
     notes.notesArray[+index].color = color;
-    // localStorage.setItem('notesData', JSON.stringify(notes.getNotes()));
-    const appStorage = new AppStorage(notes);
-    appStorage.saveToLocalStorage();
+
+    if(shouldUseFirestore){
+        appFirestoreStorage.saveToDatabase(notes);
+    } else {
+        appStorage.saveToLocalStorage(notes);
+    }
     document.getElementById("noteContainerID" + index).style.backgroundColor = "#" + color;
 }
 
-(function (){
+function prioritizeNote(this: HTMLElement) {
+    let index = this.id.replace("prioritizeButton","");
+    notes.getNotes()[+index].isImportant = true;
+    if(shouldUseFirestore){
+        appFirestoreStorage.saveToDatabase(notes);
+    } else {
+        appStorage.saveToLocalStorage(notes);
+    }
+    document.getElementById("importantNotes").appendChild(this.parentElement);
+}
 
-   let notesFromStorage = JSON.parse(localStorage.getItem('notesData')) as Notes;
+function unprioritizeNote(this: HTMLElement) {
+    let index = this.id.replace("unprioritizeButton","");
+    console.log(index);
+    notes.getNotes()[+index].isImportant = false;
+    if(shouldUseFirestore){
+        appFirestoreStorage.saveToDatabase(notes);
+    } else {
+        appStorage.saveToLocalStorage(notes);
+        }
+        document.getElementById("lessImportantNotes").appendChild(this.parentElement)
+    }
 
-    notes = new Notes();
+function createNotesUI(notes: Notes){
 
-    console.log(notes);
-
-    Object.assign(notes , notesFromStorage);
-
-    let xyz = notes.getNotes();
-
-    // if(this.notes){
-        xyz.forEach((element, index) => {
+    if(notes){
+        notes.getNotes().forEach((element, index) => {
 
             const containerElement = document.createElement("div");
             containerElement.className = "noteContainer";
@@ -229,6 +185,7 @@ function getRandColor(this: HTMLElement)
             editElement.innerHTML = "E";
             editElement.id = "editButton" + index;
             editElement.addEventListener("click", editNote);
+           
          
             const generateColor = document.createElement("button");
             generateColor.className = "generateColorButton";
@@ -236,9 +193,21 @@ function getRandColor(this: HTMLElement)
             generateColor.id = "generateColor" + index;
             generateColor.addEventListener("click", getRandColor);
             let color =  notes.getNotes()[index].color;
-            
-            
 
+            const prioritizeElement = document.createElement("button");
+            prioritizeElement.className = "prioritizeButton";
+             prioritizeElement.innerHTML = "P";
+            prioritizeElement.id = "prioritizeButton" + index;
+            prioritizeElement.addEventListener("click", unprioritizeNote);
+            prioritizeElement.addEventListener("click", prioritizeNote);
+
+            const unprioritizeElement = document.createElement("button");
+            unprioritizeElement.className = "unprioritizeButton";
+            unprioritizeElement.innerHTML = "NP";
+            unprioritizeElement.id = "unprioritizeButton" + index;
+            unprioritizeElement.addEventListener("click", unprioritizeNote);
+            
+             
             const dateOfCreation = document.createElement("p");
             let today = notes.getNotes()[index].date;
             dateOfCreation.innerHTML = today.toString();
@@ -248,14 +217,47 @@ function getRandColor(this: HTMLElement)
             containerElement.appendChild(contentElement);
             containerElement.appendChild(deleteElement);
             containerElement.appendChild(editElement);
+            containerElement.appendChild(prioritizeElement);
+            containerElement.appendChild(unprioritizeElement);
             containerElement.appendChild(generateColor);
             containerElement.appendChild(dateOfCreation);
+
             
-            console.log(containerElement);
             document.getElementsByClassName("lessImportantNotes")[0].appendChild(containerElement);
             document.getElementById("noteContainerID" + index).style.backgroundColor = "#" + color;
-        })
-    
-// }
+           
 
-}) ();
+            if(notes.getNotes()[index].isImportant) {
+                document.getElementById('importantNotes').appendChild(
+                    document.getElementById('noteContainerID' + index)
+                  );
+                  prioritizeElement.style.visibility = 'hidden';
+            }
+
+            if(!notes.getNotes()[index].isImportant) {
+                document.getElementById('lessImportantNotes').appendChild(
+                    document.getElementById('noteContainerID' + index)
+                  );
+                  unprioritizeElement.style.visibility = 'hidden';
+            }
+
+            
+        })
+    }
+}
+
+(function (){
+
+    if(shouldUseFirestore){
+        appFirestoreStorage.getNotesFromDatabase().then(data => {
+            notes = new Notes();
+            Object.assign(notes , data);
+            createNotesUI(notes);
+        });
+    } else {
+         let notesFromStorage = JSON.parse(localStorage.getItem('notesData')) as Notes;
+         notes = new Notes();
+         Object.assign(notes , notesFromStorage);
+         createNotesUI(notes);
+    }    
+}());
