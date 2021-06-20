@@ -1,29 +1,23 @@
 body {
-    background: lightblue;
-  }
-  
-  .noteContainer {
-    border: 1px solid red;
-    width: 200px;
-    margin-top: 10px;
-    display: inline-block;
-    margin: 1%;
-  }
+  background: lightblue;
+}
 
-  // .importantNotes {
-  //   border: 1px solid black;
-  //   height: 100px;
-  //   margin: 5%;
-  //   margin-left: 80%;
-  // }
+.noteContainer {
+  border: 1px solid red;
+  width: 200px;
+  margin-top: 10px;
+  display: inline-block;
+  margin-right: 1px;
+  word-wrap: break-word;
+  margin-right: 10px;
+}
 
-  // .lessImportantNotes {
-  //   border: 1px solid black;
-  //   height: 100px;
-  //   margin: 5%;
-  //   margin-right: 80%;
-  // }
+textarea {
+width: 96%;
+resize: none;
+min-height: 100px;
+}
 
-  // #form {
-  //   border: 1px solid blue;
-  // }
+.importantNotes {
+height:200px;
+}
